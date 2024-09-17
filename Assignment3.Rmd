@@ -1,0 +1,62 @@
+---
+title: "Assignment 3"
+author: "Krishan"
+date: "2024-09-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Dataset
+
+
+```{r}
+data<-read.csv("/Users/krishanbhalsod/Desktop/online_gaming_behavior_dataset.csv")
+```
+## Clean Data.
+
+```{r}
+data$InGamePurchases<-NULL
+```
+
+## Creating a Histogram
+
+This is a histogram that shows the range of play time hours for every game. The distribution does appear to be normal. It doesn't skew in either direction, so if I did want to analyze this data further, a t-test would suffice.
+
+```{r}
+hist(data$PlayTimeHours,main="Range of Play Time Hours",xlab="Hours",ylab="Frequency")
+```
+
+## Creating a Scatter Plot
+
+I will be creating a scatter plot to check if there's a correlation between the age and the number of sessions per week. I created a linear regression line and of course there's no correlation. Age and the number of sessions have no correlation.
+
+```{r}
+library(ggplot2)
+ggplot(data,aes(x=Age, y=SessionsPerWeek))+
+  geom_point(color = "black")+
+  geom_smooth(method = "lm", se = FALSE, color = "blue")+
+  labs(title = "Age vs Sessions Per Week",x = "Age",y="Sessions Per Week")
+```
+## Statistical Calculation
+
+For my statistical calculation, I will create a hypothesis saying that games with a high engagement level will have high play time hours. First I will perform basic statistical calculations such as the average session time and the average play time hours. Then I will perform a t-test
+
+```{r}
+mean(data$SessionsPerWeek)
+mean(data$PlayTimeHours)
+```
+
+## T-Test
+
+```{r}
+high_engagement<-subset(data, EngagementLevel=="High")
+not_high_engagement <-subset(data,EngagementLevel!="High")
+t_test <- t.test(high_engagement$PlayTimeHours, not_high_engagement$PlayTimeHours)
+t_test
+```
+## Conclusion
+
+With a p-value of 0.4437, it's safe to say that we do not have enough evidence to support the alternative hypothesis where high engagement level means high play time hours.
